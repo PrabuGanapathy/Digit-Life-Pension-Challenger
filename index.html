@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pension Challenge">
+<meta name="theme-color" content="#1a1a1a">
+<title>Pension Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;position:fixed;overflow:hidden}
+body{font-family:'Poppins',sans-serif;background:#f5f5f5;color:#1a1a1a;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+.screen{display:none;animation:fadeIn .45s ease;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-top:49px;padding-bottom:50px}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes countUp{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.topbar{background:#1a1a1a;color:#FF6B35;text-align:center;padding:env(safe-area-inset-top,0) 16px 13px;font-weight:700;font-size:14px;letter-spacing:1.2px;position:fixed;top:0;left:0;right:0;z-index:100;box-sizing:border-box}
+.topbar span{color:#fff;font-weight:400}
+.pbar-wrap{background:#e0e0e0;height:6px;position:fixed;top:calc(49px + env(safe-area-inset-top,0));left:0;right:0;z-index:99;box-sizing:border-box}
+.pbar{height:6px;background:linear-gradient(90deg,#FF6B35,#FFC000);width:0%;transition:width .5s ease;border-radius:0 3px 3px 0}
+.container{max-width:560px;margin:0 auto;padding:24px 16px 50px}
+.welcome{text-align:center;padding:36px 10px 20px}
+.welcome .logo{font-size:64px;margin-bottom:10px;animation:float 3s ease-in-out infinite;display:inline-block}
+.welcome h1{font-size:32px;font-weight:800;line-height:1.2;margin-bottom:4px}
+.welcome h1 em{color:#FF6B35;font-style:normal}
+.welcome .tag{color:#666;font-size:14px;margin-top:6px;margin-bottom:24px;line-height:1.5}
+.welcome .sub{font-size:11px;color:#bbb;margin-bottom:28px}
+.score-info{background:#fff;border-radius:14px;padding:20px;box-shadow:0 3px 14px rgba(0,0,0,.06);margin-bottom:28px;text-align:left}
+.score-info h3{font-size:14px;font-weight:700;margin-bottom:12px;text-align:center}
+.si-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:13px}
+.si-row:last-child{border-bottom:none}
+.si-row .si-label{color:#555}
+.si-row .si-wt{font-weight:700;color:#FF6B35;background:#fff3e0;padding:2px 10px;border-radius:12px;font-size:12px}
+.how-it-works{display:flex;gap:10px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
+.hiw{background:#fff;border-radius:12px;padding:14px 12px;width:105px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04);border:1px solid #eee}
+.hiw .hi{font-size:26px;margin-bottom:4px;display:inline-block}.hiw .ht{font-size:10px;font-weight:600;color:#444;line-height:1.3}
+.btn-start{background:#FF6B35;color:#fff;border:none;padding:16px 48px;border-radius:14px;font-family:'Poppins',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 4px 16px rgba(255,107,53,.3);-webkit-appearance:none;width:100%;max-width:300px}
+.btn-start:active{background:#e55a25;transform:translateY(0)}
+.btn-start:not(:active){background:#FF6B35}
+.btnr{display:flex;gap:12px;margin-top:22px;justify-content:center;flex-wrap:wrap}
+.btn{padding:13px 30px;border-radius:12px;border:none;font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s ease;-webkit-appearance:none;flex:1;min-width:120px}
+.bp{background:#FF6B35;color:#fff}.bp:active{background:#e55a25}.bp:not(:active){background:#FF6B35}
+.bpa{background:#FFC000;color:#1a1a1a}.bpa:active{background:#e6ac00}.bpa:not(:active){background:#FFC000}
+.bs{background:#e8e8e8;color:#555}.bs:active{background:#d5d5d5}.bs:not(:active){background:#e8e8e8}
+.scard{background:linear-gradient(135deg,#1a1a1a,#333);color:#fff;border-radius:16px;padding:24px 20px;margin-bottom:18px;position:relative;overflow:hidden}
+.scard .sc-scenario{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}
+.scard .sc-name{font-size:24px;font-weight:800;margin-bottom:2px}
+.scard .sc-age{font-size:13px;color:#ccc;margin-bottom:12px}
+.scard .sc-desc{font-size:13px;color:#ddd;line-height:1.65}
+.qcard{background:#fff;border-radius:15px;padding:22px 18px;box-shadow:0 4px 18px rgba(0,0,0,.07);margin-bottom:16px;animation:slideIn .35s ease}
+.qcard .q-num{font-size:11px;color:#FF6B35;font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.qcard h4{font-size:15px;font-weight:700;margin-bottom:14px;color:#1a1a1a}
+.qcard .q-wt{font-size:11px;color:#aaa;font-weight:400}
+.qo{display:block;padding:13px 16px;border:2px solid #e8e8e8;border-radius:11px;margin-bottom:9px;cursor:pointer;font-size:13px;transition:all .2s ease;line-height:1.4;background:#fff;-webkit-appearance:none;width:100%;text-align:left}
+.qo:active{border-color:#FFC000;background:#fffef5}
+.qo:not(:active){border-color:#e8e8e8;background:#fff}
+.qo.chosen{border-color:#FFC000;background:#fffbe6;font-weight:600}
+.reveal-card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 3px 14px rgba(0,0,0,.06);margin-bottom:10px}
+.rr{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:10px;margin-bottom:8px;font-size:13px;line-height:1.5}
+.rrc{background:#e8f5e9;color:#2e7d32}
+.rrw{background:#fce4ec;color:#c62828}
+.rr .rr-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.rr .rr-text strong{display:block;font-size:12px;margin-bottom:2px}
+.explain-box{background:#f8f9fa;border-radius:12px;padding:16px;margin-top:14px;border-left:4px solid #FFC000}
+.explain-box strong{font-size:13px;color:#1a1a1a}
+.explain-box p{font-size:12px;color:#555;line-height:1.6;margin-top:4px}
+.scenario-score{text-align:center;font-size:28px;font-weight:800;margin:10px 0;color:#fff}
+.scenario-score span{font-size:14px;font-weight:400;color:#ccc}
+.fs-header{text-align:center;margin-bottom:20px}
+.fs-header h2{font-size:22px;font-weight:800}
+.sc-circle{width:150px;height:150px;border-radius:50%;background:conic-gradient(#FF6B35 var(--p),#e8e8e8 0);display:flex;align-items:center;justify-content:center;margin:20px auto;position:relative;animation:countUp .6s ease}
+.sc-circle::after{content:'';position:absolute;width:118px;height:118px;border-radius:50%;background:#fff}
+.sc-num{position:relative;z-index:1;font-size:34px;font-weight:800;color:#1a1a1a}
+.fs-total{text-align:center;font-size:22px;font-weight:700;margin:6px 0}
+.fs-grade{text-align:center;font-size:16px;color:#666;margin-bottom:20px}
+.cat-section{background:#fff;border-radius:14px;padding:18px;box-shadow:0 3px 12px rgba(0,0,0,.05);margin-bottom:16px}
+.cat-section h4{font-size:14px;font-weight:700;margin-bottom:12px}
+.cat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:12px}
+.cat-row:last-child{border-bottom:none}
+.cat-label{flex:1;color:#555}
+.cat-pct{width:40px;text-align:right;font-weight:700;font-size:13px;margin-right:10px}
+.cat-bar{width:100px;height:8px;background:#e8e8e8;border-radius:4px;overflow:hidden}
+.cat-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.fill-green{background:#4CAF50}.fill-yellow{background:#FFC000}.fill-red{background:#f44336}
+.tag-section{margin-top:16px}
+.tag-section strong{font-size:13px}
+.stag{display:inline-block;padding:4px 12px;border-radius:16px;font-size:11px;font-weight:600;margin:3px 3px}
+.stag-g{background:#e8f5e9;color:#2e7d32}.stag-o{background:#fff3e0;color:#e65100}
+.sum-section{background:#fff;border-radius:14px;padding:18px;box-shadow:0 3px 12px rgba(0,0,0,.05);margin-top:16px}
+.sum-section h4{font-size:14px;font-weight:700;margin-bottom:10px}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
+.sum-row:last-child{border-bottom:none}
+.sum-row .sum-name{flex:1;color:#444}
+.sum-row .sum-score{font-weight:700;font-size:14px}
+.footer{text-align:center;padding:20px;font-size:10px;color:#ccc;margin-top:30px}
+@supports(padding:max(0px)){body{padding-bottom:max(50px,env(safe-area-inset-bottom))}}
+@media(max-height:600px){.screen{padding-top:43px;padding-bottom:40px}.container{padding:16px 12px 20px}}
+@media(max-width:400px){.container{padding:16px 12px 40px}.welcome h1{font-size:26px}.hiw{width:90px;padding:10px 8px}.btn{padding:12px 20px;font-size:13px}.qo{padding:11px 14px;font-size:12px}}
+</style>
+</head>
+<body>
+<div class="topbar">DIGIT LIFE <span>| Pension Challenge</span></div>
+<div class="pbar-wrap"><div class="pbar" id="pb"></div></div>
+
+<div class="screen active" id="scHome">
+<div class="container">
+<div class="welcome">
+  <div class="logo">&#x1F3AE;</div>
+  <h1>Pension <em>Challenge</em></h1>
+  <div class="tag">Test your product knowledge with<br>real customer scenarios</div>
+  <div class="how-it-works">
+    <div class="hiw"><div class="hi">&#x1F4CB;</div><div class="ht">Read Customer Profile</div></div>
+    <div class="hiw"><div class="hi">&#x1F914;</div><div class="ht">Answer 5 Decisions</div></div>
+    <div class="hiw"><div class="hi">&#x2705;</div><div class="ht">Get Scored &amp; Learn</div></div>
+  </div>
+  <div class="score-info">
+    <h3>&#x1F3AF; Scoring Breakdown</h3>
+    <div class="si-row"><span class="si-label">&#x1F6E1;&#xFE0F; Which Variant? (Sukoon / BOSS)</span><span class="si-wt">30%</span></div>
+    <div class="si-row"><span class="si-label">&#x1F4C4; Which Annuity Option?</span><span class="si-wt">25%</span></div>
+    <div class="si-row"><span class="si-label">&#x1F46B; Single Life or Joint Life?</span><span class="si-wt">20%</span></div>
+    <div class="si-row"><span class="si-label">&#x1F4B3; Payment Mode?</span><span class="si-wt">10%</span></div>
+    <div class="si-row"><span class="si-label">&#x2728; Key Value Proposition?</span><span class="si-wt">15%</span></div>
+  </div>
+  <div class="sub">5 random scenarios per session &bull; 13 total in the bank<br>Digit Life Pension Plan &mdash; Sukoon &amp; BOSS Variants</div>
+  <button class="btn-start" onclick="beginChallenge()">Start Challenge &#x1F680;</button>
+</div>
+<div class="footer">Internal Training Material &bull; Not for Solicitation</div>
+</div>
+</div>
+
+<div class="screen" id="scPlay">
+<div class="container"><div id="playContent"></div></div>
+</div>
+
+<div class="screen" id="scScore">
+<div class="container">
+<div id="scoreContent"></div>
+<div class="btnr" style="margin-top:22px">
+  <button class="btn bs" onclick="goHome()">&#x1F3E0; Home</button>
+  <button class="btn bp" onclick="beginChallenge()">&#x1F504; Try Again</button>
+</div>
+<div class="footer">Digit Life Pension Plan (UIN: 165N032V01)</div>
+</div>
+</div>
+
+<script>
+const P=[
+{id:1,name:"Rajan",persona:"The Lone Wolf",age:60,
+desc:"60-year-old retired government officer. Single, no dependents. Has ₹25 lakh in savings. Wants the maximum possible guaranteed monthly income from his retirement corpus. Does not need to leave anything behind for anyone. Risk-averse — wants 100% certainty.",
+ans:{variant:"Sukoon",option:"Option 1: Life Annuity (No Death Benefit)",lifeType:"Single Life",payment:"Single Pay",feature:"Immediate Guaranteed Pension"},
+ex:"No dependents + max income focus = Life Annuity (Option 1) for the highest payout rate. No death benefit needed. Single Pay from available corpus. Conservative = Sukoon. Already retired = Immediate Guaranteed Pension from day one."},
+
+{id:2,name:"Suresh",persona:"The Legacy Builder",age:60,
+desc:"60-year-old retired banker. Has a wife and 2 adult children. Retirement corpus of ₹40 lakh. Wants guaranteed income for himself AND wants the full purchase price returned to his family when he passes away. Prefers guaranteed returns.",
+ans:{variant:"Sukoon",option:"Option 2: Life Annuity + ROPP on Death",lifeType:"Single Life",payment:"Single Pay",feature:"Immediate Guaranteed Pension"},
+ex:"Income + legacy for family = ROPP on Death (Option 2). Purchase price goes to nominee on death. Single Pay from retirement corpus. Single Life — he is the annuitant, wife is nominee. Guaranteed = Sukoon. Already retired = Immediate Guaranteed Pension."},
+
+{id:3,name:"Priya",persona:"The Steady Planner",age:40,
+desc:"40-year-old IT professional. Married with one child. Wants to build stable retirement income starting from age 56. Can pay regular premiums for the next 15 years from her salary. Prefers 100% guaranteed, no market exposure whatsoever.",
+ans:{variant:"Sukoon",option:"Option 2: Life Annuity + ROPP on Death",lifeType:"Single Life",payment:"Regular Pay (15 years)",feature:"Growth of Corpus during deferment"},
+ex:"Long 15-year runway, salaried = Regular Pay 15 years. Income from age 56 = 15-year deferment where corpus grows before payouts begin. Family + legacy = ROPP on Death (Option 2). Zero market risk = Sukoon."},
+
+{id:4,name:"Arvind",persona:"The Inflation Fighter",age:45,
+desc:"45-year-old business owner. Married with one child. Very concerned about rising costs eroding his retirement income over 20-30 years. Wants an income that increases every year to keep up with inflation. Can pay for 10 years, wants income from age 61.",
+ans:{variant:"Sukoon",option:"Option 2: Life Annuity + ROPP on Death",lifeType:"Single Life",payment:"Limited Pay (10 years)",feature:"Increasing Annuity (5% p.a.)"},
+ex:"Inflation concern is the #1 driver = Increasing Annuity at 5% simple p.a. Income rises every year to maintain purchasing power. Limited Pay 10 years. Guaranteed + family protection = Sukoon with ROPP on Death (Option 2)."},
+
+{id:5,name:"Ramesh & Sunita",persona:"The Family Man",age:45,
+desc:"Ramesh (45) and Sunita (42) are a married couple. Ramesh wants to guarantee a peaceful retirement for both of them starting from his age 61. Chooses 10-year payment. Most importantly, he doesn't want Sunita to bear the burden of paying premiums if something happens to him during the payment period.",
+ans:{variant:"Sukoon",option:"Option 2: Life Annuity + ROPP on Death",lifeType:"Joint Life",payment:"Limited Pay (10 years)",feature:"Waiver of Premium on Death"},
+ex:"Couple needing income for BOTH lives = Joint Life. Key concern about spouse paying premiums if husband dies = Waiver of Premium on Death. Income for both + legacy = ROPP on Death (Option 2). Conservative = Sukoon."},
+
+{id:6,name:"Dr. Meena",persona:"The Health Conscious",age:50,
+desc:"50-year-old doctor. Has a strong family history of cardiac illness and diabetes. Deeply worried about facing a financial crisis if diagnosed with a critical illness or disability during retirement. Wants a financial cushion (lumpsum) on diagnosis, with pension continuing after. Can pay for 5 years, wants income from age 61.",
+ans:{variant:"Sukoon",option:"Option 4: Life Annuity + ROPP on CI/ATPD/Death",lifeType:"Single Life",payment:"Limited Pay (5 years)",feature:"Lumpsum on CI/ATPD diagnosis"},
+ex:"Health anxiety + wants lumpsum on diagnosis = Option 4 (ROPP on CI/ATPD/Death). Pays back purchase price on CI/ATPD while annuity continues. Limited Pay 5 years with 10-year deferment. Conservative = Sukoon."},
+
+{id:7,name:"Kamala",persona:"The Self-Reliant",age:58,
+desc:"58-year-old retired school teacher. Single, lives independently. Has ₹50 lakh lumpsum from retirement benefits. Wants pension to start immediately. Her biggest concern: if a serious illness strikes, she wants her monthly income to INCREASE (not just a lumpsum) so she can afford ongoing care costs.",
+ans:{variant:"Sukoon",option:"Option 5: Enhanced Annuity on CI/ATPD",lifeType:"Single Life",payment:"Single Pay",feature:"Enhanced Annuity on CI/ATPD (50% increase)"},
+ex:"Wants higher ONGOING income if sick = Enhanced Annuity on CI/ATPD (Option 5). Annuity rises by 50% for remaining life on diagnosis. This is the key differentiator — not just immediate start, but income protection against health decline. Single Pay Immediate. Sukoon."},
+
+{id:8,name:"Vikram & Anjali",persona:"The Power Couple",age:50,
+desc:"Vikram (50) and Anjali (48). Dual-income couple with ₹2 crore in combined savings. Want a guaranteed lifelong pension for both of them starting after 10 years. Income must continue for the surviving spouse if one passes away. Also want purchase price returned to nominee after both pass.",
+ans:{variant:"Sukoon",option:"Option 2: Life Annuity + ROPP on Death",lifeType:"Joint Life",payment:"Single Pay",feature:"Growth of Corpus during deferment"},
+ex:"Couple wanting income for both lives = Joint Life. Large corpus = Single Pay. 10-year wait = corpus grows during deferment before payouts begin. Income + death benefit = ROPP on Death (Option 2). 100% guaranteed = Sukoon."},
+
+{id:9,name:"Mohan",persona:"Grandpa at Heart",age:48,
+desc:"48-year-old salaried professional. Wants stable guaranteed retirement income from age 61. His unique goal: he wants to gift his grandchildren a lumpsum amount when he turns 75. Can pay premiums for 10 years. Prefers guaranteed, no market risk.",
+ans:{variant:"Sukoon",option:"Option 3: ROPP as Lumpsum at Milestone",lifeType:"Single Life",payment:"Limited Pay (10 years)",feature:"Milestone lumpsum at age 75"},
+ex:"Unique milestone gift goal = Option 3 (ROPP as Lumpsum at Milestone age 75). Lifelong income AND 100% premiums returned at 75 as gift to grandchildren. Limited Pay 10 years. Sukoon."},
+
+{id:10,name:"Anil",persona:"The Late Starter",age:55,
+desc:"55-year-old medical practitioner. Hasn't done any retirement planning until now. Realizes he must start immediately. Can only pay premiums for 5 years. Wants guaranteed pension from age 61. Wants family to get back the purchase price if he passes away.",
+ans:{variant:"Sukoon",option:"Option 2: Life Annuity + ROPP on Death",lifeType:"Single Life",payment:"Limited Pay (5 years)",feature:"Growth of Corpus during deferment"},
+ex:"Late starter with a short 5-year window = Limited Pay 5 years. Income from 61 = 5-year deferment where corpus grows before payouts. Legacy for family = ROPP on Death (Option 2). 100% guaranteed = Sukoon."},
+
+{id:11,name:"Karthik",persona:"The Market Believer",age:40,
+desc:"40-year-old tech entrepreneur. Has been investing in equity mutual funds for 12+ years. Deeply confident that markets will deliver superior returns over a 15-year horizon. Wants retirement income from age 56 but isn't willing to lock in today's guaranteed rates for the next 40 years. Wants principal protected for family.",
+ans:{variant:"BOSS",option:"Option 2: Life Annuity + ROPP on Death",lifeType:"Single Life",payment:"Regular Pay (15 years)",feature:"60:40 Guaranteed-Variable Mix"},
+ex:"Market believer + long 15-year horizon = BOSS variant. Won't settle for guaranteed-only = Variable with Nifty 50 upside. 60:40 mix matches aggressive profile. 15-year regular pay. ROPP protects family."},
+
+{id:12,name:"Lakshmi",persona:"The Wealth Optimizer",age:50,
+desc:"50-year-old businesswoman. Already has FDs maturing, PPF, and rental income lined up — her 'safe' money is fully sorted. Now wants a growth-oriented retirement income stream starting after 10 years — specifically does NOT want another guaranteed-rate product. Can invest ₹50 lakhs in one shot.",
+ans:{variant:"BOSS",option:"Option 2: Life Annuity + ROPP on Death",lifeType:"Single Life",payment:"Single Pay",feature:"60:40 Guaranteed-Variable Mix"},
+ex:"Safe portfolio sorted = doesn't need another guaranteed product. Wants growth = BOSS. Lumpsum = Single Pay. 10-year deferment. 60:40 for max market participation. ROPP for family."},
+
+{id:13,name:"Arjun & Divya",persona:"The Next Gen Couple",age:42,
+desc:"Arjun (42) and Divya (40). Both are corporate employees with dual income and one child. Want a joint-life pension for both of them. Not satisfied with locking today's rates for 40+ years. With a 15-year runway and high risk appetite, they want their pension corpus to grow with the market. ROPP also secures their child's inheritance.",
+ans:{variant:"BOSS",option:"Option 2: Life Annuity + ROPP on Death",lifeType:"Joint Life",payment:"Regular Pay (10 years)",feature:"60:40 Guaranteed-Variable Mix"},
+ex:"Dual income + high risk + 15-year runway = BOSS 60:40. Joint Life for both. Regular Pay from dual salary. Market growth + child inheritance via ROPP."}
+];
+
+const QT=[
+{key:"variant",label:"Which product variant?",wt:30,
+opts:["Sukoon","BOSS"]},
+{key:"option",label:"Which annuity option?",wt:25,
+opts:["Option 1: Life Annuity (No Death Benefit)","Option 2: Life Annuity + ROPP on Death","Option 3: ROPP as Lumpsum at Milestone","Option 4: Life Annuity + ROPP on CI/ATPD/Death","Option 5: Enhanced Annuity on CI/ATPD"]},
+{key:"lifeType",label:"Single Life or Joint Life?",wt:20,
+opts:["Single Life","Joint Life"]},
+{key:"payment",label:"Payment mode?",wt:10,
+opts:["Single Pay","Regular Pay (5 years)","Regular Pay (10 years)","Regular Pay (15 years)","Limited Pay (5 years)","Limited Pay (10 years)"]},
+{key:"feature",label:"Key value proposition?",wt:15,
+opts:["Immediate Guaranteed Pension","Growth of Corpus during deferment","Increasing Annuity (5% p.a.)","Waiver of Premium on Death","Lumpsum on CI/ATPD diagnosis","Enhanced Annuity on CI/ATPD (50% increase)","Milestone lumpsum at age 75","60:40 Guaranteed-Variable Mix"]}
+];
+
+let CH={scenarios:[],cur:0,qi:0,ans:[],scores:[]};
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.body.scrollTop=0;
+  document.documentElement.scrollTop=0;
+}
+
+function goHome(){show('scHome');sp(0)}
+
+function sp(p){document.getElementById('pb').style.width=p+'%'}
+
+function beginChallenge(){
+  let s=[...P].sort(()=>Math.random()-.5);
+  CH={scenarios:s.slice(0,5),cur:0,qi:0,ans:[],scores:[]};
+  sp(4);
+  showScenario();
+}
+
+function showScenario(){
+  show('scPlay');
+  const sc=CH.scenarios[CH.cur];
+  CH.qi=0;
+  CH.ans=[];
+  sp(4+(CH.cur*19));
+  let h='<div class="scard">';
+  h+='<div class="sc-scenario">Scenario '+(CH.cur+1)+' of 5</div>';
+  h+='<div class="sc-name">'+sc.name+'</div>';
+  h+='<div class="sc-age">Age: '+sc.age+' &bull; '+sc.persona+'</div>';
+  h+='<div class="sc-desc">'+sc.desc+'</div>';
+  h+='</div><div id="qArea"></div>';
+  document.getElementById('playContent').innerHTML=h;
+  showQuestion();
+}
+
+function showQuestion(){
+  const qi=CH.qi;
+  if(qi>=QT.length){showReveal();return}
+  const q=QT[qi];
+  let h='<div class="qcard"><div class="q-num">Decision '+(qi+1)+' of 5</div>';
+  h+='<h4>'+q.label+' <span class="q-wt">('+q.wt+'% weight)</span></h4>';
+  q.opts.forEach((o,i)=>{
+    h+='<button class="qo" type="button" onclick="pickAnswer('+qi+','+i+',this)">'+o+'</button>';
+  });
+  h+='</div>';
+  document.getElementById('qArea').innerHTML=h;
+}
+
+function pickAnswer(qi,oi,el){
+  el.parentElement.querySelectorAll('.qo').forEach(o=>o.classList.remove('chosen'));
+  el.classList.add('chosen');
+  CH.ans[qi]=QT[qi].opts[oi];
+  setTimeout(()=>{CH.qi++;showQuestion()},380);
+}
+
+function showReveal(){
+  const sc=CH.scenarios[CH.cur];
+  const correct=[sc.ans.variant,sc.ans.option,sc.ans.lifeType,sc.ans.payment,sc.ans.feature];
+  let ss=0,det=[];
+  QT.forEach((q,i)=>{
+    const ua=CH.ans[i]||'(not answered)';
+    const ok=ua===correct[i];
+    if(ok)ss+=q.wt;
+    det.push({label:q.label,user:ua,correct:correct[i],ok:ok,wt:q.wt,key:q.key});
+  });
+  CH.scores.push({sc:sc,score:ss,det:det});
+  const scoreColor=ss>=80?'#4CAF50':ss>=50?'#FFC000':'#f44336';
+  let h='<div class="scard">';
+  h+='<div class="sc-scenario">Results — Scenario '+(CH.cur+1)+' of 5</div>';
+  h+='<div class="sc-name">'+sc.name+'</div>';
+  h+='<div class="sc-age">'+sc.persona+' • Age '+sc.age+'</div>';
+  h+='<div class="scenario-score" style="color:'+scoreColor+'">'+ss+' <span>/ 100</span></div>';
+  h+='</div><div class="reveal-card">';
+  det.forEach(d=>{
+    const cls=d.ok?'rrc':'rrw';
+    const icon=d.ok?'✅':'❌';
+    h+='<div class="rr '+cls+'"><span class="rr-icon">'+icon+'</span><div class="rr-text">';
+    h+='<strong>'+d.label+'</strong>';
+    if(d.ok){h+='Your answer: '+d.user+' ✓'}
+    else{h+='Your answer: '+d.user+'<br>→ Correct: <strong>'+d.correct+'</strong>'}
+    h+='</div></div>';
+  });
+  h+='</div>';
+  h+='<div class="explain-box"><strong>💡 Why?</strong><p>'+sc.ex+'</p></div>';
+  const btnLabel=CH.cur<4?'Next Scenario →':'See Final Score 🏆';
+  const btnCls=CH.cur<4?'bp':'bpa';
+  h+='<div class="btnr"><button class="btn '+btnCls+'" type="button" onclick="nextOrScore()">'+btnLabel+'</button></div>';
+  document.getElementById('playContent').innerHTML=h;
+}
+
+function nextOrScore(){CH.cur++;if(CH.cur>=5)showFinalScore();else showScenario()}
+
+function showFinalScore(){
+  sp(100);
+  show('scScore');
+  const tot=CH.scores.reduce((s,x)=>s+x.score,0);
+  const pct=Math.round(tot/5);
+  const cs={};
+  QT.forEach(q=>cs[q.key]={total:0,possible:0,label:q.label});
+  CH.scores.forEach(s=>{s.det.forEach(d=>{cs[d.key].possible+=d.wt;if(d.ok)cs[d.key].total+=d.wt})});
+  let strengths=[],weaknesses=[];
+  Object.values(cs).forEach(c=>{c.rate=c.possible?Math.round(c.total/c.possible*100):0;if(c.rate>=80)strengths.push(c.label.replace('?',''));else if(c.rate<50)weaknesses.push(c.label.replace('?',''))});
+  let grade='';
+  if(pct>=90)grade='🏆 Expert — You know this product inside out!';
+  else if(pct>=70)grade='⭐ Proficient — Solid knowledge, minor gaps';
+  else if(pct>=50)grade='📘 Learning — Good foundation, keep practising';
+  else grade='🔄 Needs Practice — Review the product material';
+  let h='<div class="fs-header"><h2>🏆 Final Scorecard</h2></div>';
+  h+='<div class="sc-circle" style="--p:'+pct+'%"><div class="sc-num">'+pct+'%</div></div>';
+  h+='<div class="fs-total">'+tot+' / 500</div>';
+  h+='<div class="fs-grade">'+grade+'</div>';
+  h+='<div class="cat-section"><h4>📊 Category Breakdown</h4>';
+  Object.values(cs).forEach(c=>{
+    const fillCls=c.rate>=70?'fill-green':c.rate>=40?'fill-yellow':'fill-red';
+    h+='<div class="cat-row"><span class="cat-label">'+c.label.replace('?','')+'</span>';
+    h+='<span class="cat-pct">'+c.rate+'%</span>';
+    h+='<div class="cat-bar"><div class="cat-fill '+fillCls+'" style="width:'+c.rate+'%"></div></div></div>';
+  });
+  h+='</div>';
+  if(strengths.length){h+='<div class="tag-section"><strong>💪 Strengths:</strong><br>';strengths.forEach(s=>h+='<span class="stag stag-g">✓ '+s+'</span>');h+='</div>'}
+  if(weaknesses.length){h+='<div class="tag-section" style="margin-top:10px"><strong>📚 Growth Areas:</strong><br>';weaknesses.forEach(s=>h+='<span class="stag stag-o">⚠ '+s+'</span>');h+='</div>'}
+  h+='<div class="sum-section"><h4>📋 Scenario Summary</h4>';
+  CH.scores.forEach((s,i)=>{
+    const emoji=s.score>=80?'🟢':s.score>=50?'🟡':'🔴';
+    h+='<div class="sum-row"><span class="sum-name">'+emoji+' '+(i+1)+'. '+s.sc.persona+' ('+s.sc.name+')</span>';
+    h+='<span class="sum-score">'+s.score+'/100</span></div>';
+  });
+  h+='</div>';
+  document.getElementById('scoreContent').innerHTML=h;
+  setTimeout(()=>{document.querySelectorAll('.cat-fill').forEach(el=>{el.style.transition='width 1s ease'})},100);
+}
+</script>
+</body>
+</html>
